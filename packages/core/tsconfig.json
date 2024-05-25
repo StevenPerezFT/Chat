@@ -1,0 +1,12 @@
+{
+    "exclude": ["node_modules"],
+    "include": [".eslintrc.cjs", "**/*.js", "**/*.ts", "**/*.cjs", "**/*.mjs"],
+    "compilerOptions": {
+      "module": "esnext",
+      "moduleResolution": "node"
+    },
+    "paths": {
+      "@chat/core/*": [".src/*"]
+    }
+  }
+  

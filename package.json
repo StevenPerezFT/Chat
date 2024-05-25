@@ -1,0 +1,9 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "3.2.5"
+  }
+}
