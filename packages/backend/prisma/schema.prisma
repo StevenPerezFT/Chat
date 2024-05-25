@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  USER
+  TECHNICIAN
+  ADMIN
+  ROOT
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid()) @db.Uuid
+  createdAt DateTime  @default(now()) @db.Timestamp @map("created_at")
+  updatedAt DateTime  @updatedAt @db.Timestamp @map("updated_at")
+  active    Boolean   @default(true)
+
+  auth      Auth?
+  messages  Message[]
+  rooms     UserRoom[]
+
+  @@map("user")
+}
+
+model Auth {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String    @db.VarChar(40)
+  email     String   @unique @db.VarChar(256)
+  hashedPassword     String   @db.VarChar(64)@map("hashed_password")
+  role      Role     @default(USER)
+  userId    String?   @unique @db.Uuid @map("user_id")
+
+  createdAt DateTime @default(now()) @db.Timestamp @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  active    Boolean  @default(true)
+
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@map("auth")
+}
+
+model Room {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String    @db.VarChar(40)
+  createdAt DateTime  @default(now()) @db.Timestamp
+  updatedAt DateTime  @updatedAt @db.Timestamp
+  active    Boolean   @default(true)
+
+  messages  Message[]
+  users     UserRoom[]
+  @@map("room")
+}
+
+model Message {
+  id        String    @id @default(uuid()) @db.Uuid
+  roomId    String    @db.Uuid @map("room_id")
+  userId    String    @db.Uuid @map("user_id")
+  text      String
+  createdAt DateTime  @default(now()) @db.Timestamp @map("created_at")
+  updatedAt DateTime  @updatedAt @db.Timestamp @map("updated_at")
+  active    Boolean   @default(true)
+
+  room      Room      @relation(fields: [roomId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+
+  @@index([roomId])
+  @@index([userId])
+  @@map("message")
+}
+
+model UserRoom {
+  userId    String @db.Uuid @map("user_id")
+  roomId    String @db.Uuid @map("room_id")
+
+  user      User   @relation(fields: [userId], references: [id])
+  room      Room   @relation(fields: [roomId], references: [id])
+
+  @@id([userId, roomId])
+  @@index([userId])
+  @@index([roomId])
+  @@map("user_room")
+}
