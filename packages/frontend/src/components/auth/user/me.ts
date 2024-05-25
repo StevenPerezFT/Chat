@@ -1,8 +1,6 @@
-import { Url } from "@chat/core/enums/url"
-import { Route } from "@chat/core/routes/frontend"
 
 export const createUser = async (token: string) => {
-    const response = await fetch(`${Url.LocalHostBackend}/${Route.User}/me`, {
+    const response = await fetch(`http://localhost:4000/user/me`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

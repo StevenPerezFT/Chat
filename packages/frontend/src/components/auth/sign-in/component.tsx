@@ -5,14 +5,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
 import { createUser } from "../user/me";
-import { Url } from "@chat/core/enums/url"
-import { Route } from "@chat/core/routes/frontend"
 
 export default function SignInComponent() {
     const router = useRouter();
     const { handleSubmit, register, reset, formState: { errors }, } = useForm<SchemaSignIn>({ resolver: zodResolver(schemaSignIn) });
     const submit = handleSubmit(async (data) => {
-        const response = await fetch(`${Url.LocalHostBackend}/${Route.Auth}/sign-in`, {
+        const response = await fetch(`http://localhost:4000/auth/sign-in`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -28,7 +26,7 @@ export default function SignInComponent() {
             if (token) {
                 document.cookie = `Authorization=${token}; path=/; max-age=36000;`; /**3600 means one hour */
                 await createUser(token)
-                router.push(`/${Route.Chat}`)
+                router.push(`/chat`)
             }
         }
         reset()

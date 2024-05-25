@@ -4,8 +4,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import schemaSignUp from "@chat/core/zod/schema.form.sign-up";
 import { SchemaInputs } from "@chat/core/types/auth";
 import { useRouter } from 'next/navigation';
-import { Url } from "@chat/core/enums/url"
-import { Route } from "@chat/core/routes/frontend"
 
 export default function SignUpComponent() {
     const router = useRouter();
@@ -16,7 +14,7 @@ export default function SignUpComponent() {
             <p>Password is not equal</p>
         }
         const { name, email, password } = data
-        const response = await fetch(`${Url.LocalHostBackend}${Route.Auth}/sign-up`, {
+        const response = await fetch(`http://localhost:4000/auth/sign-up`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -24,7 +22,7 @@ export default function SignUpComponent() {
             body: JSON.stringify({ name, email, password }),
         });
         if (response.ok) {
-            router.push(`/${Route.Auth}/sign-in`)
+            router.push(`/auth/sign-in`)
         }
         reset()
     })

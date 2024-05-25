@@ -1,8 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { Route } from "@chat/core/routes/frontend"
 
 export function middleware(request: NextRequest) {
-    const url = new URL(`/${Route.Auth}/sign-in`, request.url)
+    const url = new URL(`/auth/sign-in`, request.url)
 
     const authCookie = request.cookies.get('Authorization')
     if (!authCookie) {
@@ -13,5 +12,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [`${Route.Slash}`, `/${Route.Chat}`],
+    matcher: [`/`, `/chat`],
 };
