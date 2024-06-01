@@ -24,7 +24,6 @@ const ChatComponent = () => {
 
         socket.on('message', receiveMessage);
 
-        // Join the specified room
         socket.emit('joinRoom', room);
 
         return () => {
