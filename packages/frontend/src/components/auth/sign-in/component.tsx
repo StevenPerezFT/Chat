@@ -24,7 +24,8 @@ export default function SignInComponent() {
             const token = responseData.access_token
 
             if (token) {
-                document.cookie = `Authorization=${token}; path=/; max-age=36000;`; /**3600 means one hour */
+                localStorage.setItem('subToken', token)
+                document.cookie = `Authorization=${token}; path=/; max-age=360000;`; /**3600 means one hour */
                 await createUser(token)
                 router.push(`/chat`)
             }
