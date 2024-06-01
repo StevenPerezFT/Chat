@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 
 export function middleware(request: NextRequest) {
-    const url = new URL(`/auth/sign-in`, request.url)
+    const url = new URL(`/auth/sign-up`, request.url)
 
     const authCookie = request.cookies.get('Authorization')
     if (!authCookie) {

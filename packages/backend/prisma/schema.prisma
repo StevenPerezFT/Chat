@@ -8,12 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
-  USER
-  TECHNICIAN
-  ADMIN
-  ROOT
-}
 
 datasource db {
   provider = "postgresql"
@@ -27,67 +21,48 @@ model User {
   active    Boolean   @default(true)
 
   auth      Auth?
-  messages  Message[]
-  rooms     UserRoom[]
 
   @@map("user")
 }
 
 model Auth {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String    @db.VarChar(40)
-  email     String   @unique @db.VarChar(256)
-  hashedPassword     String   @db.VarChar(64)@map("hashed_password")
-  role      Role     @default(USER)
-  userId    String?   @unique @db.Uuid @map("user_id")
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String   @db.VarChar(40)
+  email             String   @unique @db.VarChar(256)
+  hashedPassword    String   @db.VarChar(64) @map("hashed_password")
+  userId            String?  @unique @db.Uuid @map("user_id")
 
-  createdAt DateTime @default(now()) @db.Timestamp @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-  active    Boolean  @default(true)
+  messages  Message[]
+  authMessage  AuthMessage[]
+  createdAt         DateTime @default(now()) @db.Timestamp @map("created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
+  active            Boolean  @default(true)
 
-  user      User?     @relation(fields: [userId], references: [id])
+  user              User?    @relation(fields: [userId], references: [id])
 
   @@map("auth")
 }
 
-model Room {
-  id        String    @id @default(uuid()) @db.Uuid
-  name      String    @db.VarChar(40)
-  createdAt DateTime  @default(now()) @db.Timestamp
-  updatedAt DateTime  @updatedAt @db.Timestamp
-  active    Boolean   @default(true)
-
-  messages  Message[]
-  users     UserRoom[]
-  @@map("room")
-}
 
 model Message {
   id        String    @id @default(uuid()) @db.Uuid
-  roomId    String    @db.Uuid @map("room_id")
-  userId    String    @db.Uuid @map("user_id")
+  authId    String    @db.Uuid @map("auth_id")
   text      String
   createdAt DateTime  @default(now()) @db.Timestamp @map("created_at")
   updatedAt DateTime  @updatedAt @db.Timestamp @map("updated_at")
   active    Boolean   @default(true)
 
-  room      Room      @relation(fields: [roomId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
+  auth      Auth      @relation(fields: [authId], references: [id])
 
-  @@index([roomId])
-  @@index([userId])
+  @@index(authId)
   @@map("message")
 }
 
-model UserRoom {
-  userId    String @db.Uuid @map("user_id")
-  roomId    String @db.Uuid @map("room_id")
+model AuthMessage {
+  authId    String @db.Uuid @map("auth_id")
+  auth      Auth   @relation(fields: [authId], references: [id])
 
-  user      User   @relation(fields: [userId], references: [id])
-  room      Room   @relation(fields: [roomId], references: [id])
-
-  @@id([userId, roomId])
-  @@index([userId])
-  @@index([roomId])
-  @@map("user_room")
+  @@id(authId)
+  @@index([authId])
+  @@map("auth_message")
 }

@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { TokenSub } from 'src/common/user/token.sub';
 import { AuthGuardJwt } from 'src/auth/guard';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Public } from 'src/common';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +24,7 @@ export class UserController {
             return HttpStatus.FOUND
         }
     }
+    @Public()
     @Get('test')
     async test() {
         return await this.prismaService.user.findMany()
